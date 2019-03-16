@@ -21,7 +21,7 @@ public class _8 {
         StringBuilder stringBuilder = new StringBuilder();
         int index;
 
-        while (str.contains(" ")){
+        while (str.contains(" ")) {
             index = str.lastIndexOf(" ");
             stringBuilder.append(str.substring(index + 1));
             str = str.substring(0, index);

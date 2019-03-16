@@ -15,12 +15,12 @@ public class _7 {
 
     public ArrayList<Integer> FindNumbersWithSum(int[] array, int sum) {
 
-        int i = 0;
-        int j = array.length - 1;
         ArrayList<Integer> result = new ArrayList<>();
-        if (array.length < 2 || array[0] > sum) {
+        if (array == null || array.length < 2 || array[0] > sum) {
             return result;
         }
+        int i = 0;
+        int j = array.length - 1;
 
         while (i < j) {
             if (sum == array[i] + array[j]) {

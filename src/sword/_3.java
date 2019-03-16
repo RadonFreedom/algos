@@ -45,6 +45,12 @@ public class _3 {
         return root;
     }
 
+    /**
+     * 按照先序遍历的顺序构建子树（根左右）
+     * @param low 本方法中的根节点查找的最小范围
+     * @param high 本方法中的根节点查找的最大范围
+     * @return 本方法中的根节点
+     */
     private TreeNode reconstruct(int low, int high) {
 
         if (low > high) {
