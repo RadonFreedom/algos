@@ -10,10 +10,10 @@ public class _7 {
     public int reverse(int x) {
         int result = 0;
         result += (x % 10);
-        boolean fushu = x < 0;
+        boolean neg = x < 0;
         while (x >= 10 || x <= -10) {
             x = x / 10;
-            if (overflow(x, result, fushu)) {
+            if (overflow(x, result, neg)) {
                 return 0;
             }
             result = result * 10;
@@ -22,8 +22,8 @@ public class _7 {
         return result;
     }
 
-    private boolean overflow(int x, int result, boolean fushu) {
-        if (!fushu) {
+    private boolean overflow(int x, int result, boolean neg) {
+        if (!neg) {
             return result > Integer.MAX_VALUE / 10 || result == Integer.MAX_VALUE / 10 && x % 10 > Integer.MAX_VALUE % 10;
         } else {
             return result < Integer.MIN_VALUE / 10 || result == Integer.MIN_VALUE / 10 && x % 10 < Integer.MIN_VALUE % 10;
