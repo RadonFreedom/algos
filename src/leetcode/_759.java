@@ -9,7 +9,7 @@ import java.util.*;
 
 public class _759 {
 
-    static class Interval {
+    private static class Interval {
         public int start;
         public int end;
 
