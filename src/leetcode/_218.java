@@ -9,13 +9,12 @@ import java.util.List;
  * created at 2019.07.21 15:25
  */
 
+//TODO
 public class _218 {
 
     public List<List<Integer>> getSkyline(int[][] buildings) {
-
         return mergeSkyline(buildings, 0 ,buildings.length - 1);
     }
-
 
     private List<List<Integer>> mergeSkyline(int[][] buildings, int lo, int hi) {
 
@@ -26,7 +25,7 @@ public class _218 {
             return l;
         }
 
-        int mid = (hi - lo) / 2 + lo;
+        int mid = (hi + lo) / 2;
         List<List<Integer>> ll = mergeSkyline(buildings, lo, mid);
         List<List<Integer>> rl = mergeSkyline(buildings, mid + 1, hi);
         List<List<Integer>> res = new LinkedList<>();
