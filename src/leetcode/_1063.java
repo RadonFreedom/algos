@@ -10,17 +10,19 @@ import java.util.LinkedList;
 public class _1063 {
     public int validSubarrays(int[] nums) {
         int rst = 0;
-        LinkedList<Integer> l = new LinkedList<>();
+        // 维护一个递增的栈，将每次递减时的结果累加进rst
+        // 当nums中出现递减，在当前索引取子数组的end(exclusive)，在栈顶取子数组的begin(inclusive)
+        LinkedList<Integer> s = new LinkedList<>();
 
         for (int i = 0; i < nums.length; i++) {
-            while (!l.isEmpty() && nums[l.getLast()] > nums[i]) {
-                rst += i - l.removeLast();
+            while (!s.isEmpty() && nums[s.peek()] > nums[i]) {
+                rst += i - s.pop();
             }
-            l.add(i);
+            s.push(i);
         }
 
-        while (!l.isEmpty()) {
-            rst += nums.length - l.pop();
+        while (!s.isEmpty()) {
+            rst += nums.length - s.pop();
         }
         return rst;
     }
