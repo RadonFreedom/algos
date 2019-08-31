@@ -9,38 +9,46 @@ public class _440 {
     public static void main(String[] args) {
         new _440().findKthNumber(10, 3);
     }
-    public int findKthNumber(int n, int k) {
-        // 树的层数
-        int maxHei = String.valueOf(n).length();
 
-        //当前数字
+    /**
+     *  - 如果k足够跨越下个数，curr++, k -= steps
+     *  - k不够，进入下一层，curr *= 10, k--
+     *  - k == 0 结束
+     */
+    public int findKthNumber(int n, int k) {
+        // 数字1永远是第一个数字
         int curr = 1;
         k--;
-
         while (k != 0) {
             int nextSteps = calNextSteps(curr, curr + 1, n);
-            // 如果k可以直接越过这个数
             if (k >= nextSteps) {
-                k -= nextSteps;
                 curr++;
+                k -= nextSteps;
             } else {
-                k--;
                 curr *= 10;
+                k--;
             }
         }
+
         return curr;
     }
 
+    /**
+     * 计算跨越步数
+     *  - 如果本层残缺，next > n+1，rst += n+1-curr
+     *  - 如果本层饱满，next <= n+1，rst += next-curr
+     *
+     *  long 避免了 n = 10e9 时，curr，next 溢出
+     */
     private int calNextSteps(long curr, long next, int n) {
-        int res = 0;
-        // 迭代到树的底层
+        int rst = 0;
+
         while (curr <= n) {
-            // 如果本层饱满，n+1 >= next，next - curr是本层个数
-            // 本层残缺，n+1 < next，n - curr就是残缺的底层个数
-            res += Math.min(n + 1, next) - curr;
+            rst += Math.min(next, n + 1) - curr;
             curr *= 10;
             next *= 10;
         }
-        return res;
+
+        return rst;
     }
 }
