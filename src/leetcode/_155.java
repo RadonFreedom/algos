@@ -8,60 +8,46 @@ import java.util.Stack;
  */
 
 public class _155 {
-
     class MinStack {
 
-        /**
-         * 存储着栈当前的最小值，也是{@link #getMin()}返回值
-         */
         int min = Integer.MAX_VALUE;
+        Stack<Integer> s = new Stack<>();
 
-        Stack<Integer> stack = new Stack<>();
-
-        /** initialize your data structure here. */
+        /**
+         * initialize your data structure here.
+         */
         public MinStack() {
 
         }
 
+        /**
+         * 我们把每个阶段的最小值存储在min中
+         * 如果有更小的值出现，则把前一个最小值push进栈
+         * 注意到上一个min值永远在本个min值所在栈单元下面存储
+         */
         public void push(int x) {
-
-            /*
-            如果此时min变化，将前一个阶段的min值入栈，更新min值
-            这里必须带上等号，否则新入栈的值将会造成下次pop弹出2个有效入栈值
-             */
-            if (min >= x) {
-                stack.push(min);
+            if (x <= min) {
+                s.push(min);
                 min = x;
             }
-            stack.push(x);
+            s.push(x);
         }
 
+        /**
+         * 我们需要在刚pop出的值等于min时再pop出上一个min值
+         */
         public void pop() {
-            if (stack.isEmpty()) return;
-
-            /*
-            从push()方法取逆
-            如果当前阶段的min值就是栈顶，说明上一阶段的min值是下一个栈顶
-             */
-            if (min == stack.pop()) {
-                min = stack.pop();
+            if (s.pop() == min) {
+                min = s.pop();
             }
         }
 
         public int top() {
-            return stack.peek();
+            return s.peek();
         }
 
         public int getMin() {
             return min;
         }
-    }
-
-    public static void main(String[] args) {
-        MinStack minStack = new _155().new MinStack();
-        minStack.push(0);
-        minStack.push(1);
-        minStack.push(0);
-        minStack.pop();
     }
 }
