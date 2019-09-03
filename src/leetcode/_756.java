@@ -1,8 +1,7 @@
 package leetcode;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -12,34 +11,26 @@ import java.util.List;
 
 public class _756 {
 
-    public static void main(String[] args) {
-        pyramidTransition("AABA",
-                Arrays.asList("AAA","AAB","ABA","ABB","BAC"));
-    }
+    public boolean pyramidTransition(String bottom, List<String> allowed) {
 
-    public static boolean pyramidTransition(String bottom, List<String> allowed) {
-        // 按左右子块查找上层块
-        HashMap<String, LinkedList<Character>> allowedMap = new HashMap<>();
+        HashMap<String, HashSet<Character>> allowedMap = new HashMap<>();
         for (String s : allowed) {
-            allowedMap.putIfAbsent(s.substring(0, 2), new LinkedList<>());
-            allowedMap.get(s.substring(0, 2)).addLast(s.charAt(2));
+            allowedMap.putIfAbsent(s.substring(0, 2), new HashSet<>());
+            allowedMap.get(s.substring(0, 2)).add(s.charAt(2));
         }
 
-        return searchPyramid(bottom, 0, "", allowedMap);
+        return canPyramid(bottom, 0, "", allowedMap);
     }
 
-    private static boolean searchPyramid(String currRow, int i, String nextRow, HashMap<String, LinkedList<Character>> allowedMap) {
-
-        if (currRow.length() == 1) {
+    private boolean canPyramid(String curRow, int curIdx, String nextRow, HashMap<String, HashSet<Character>> allowedMap) {
+        if (curRow.length() == 1) {
             return true;
         }
-        if (i + 1 == currRow.length()) {
-            return searchPyramid(nextRow, 0, "", allowedMap);
+        if (curIdx == curRow.length() - 1) {
+            return canPyramid(nextRow,  0, "", allowedMap);
         }
-
-        String key = currRow.substring(i, i + 2);
-        for (Character c : allowedMap.getOrDefault(key, new LinkedList<>())) {
-            if (searchPyramid(currRow, i + 1, nextRow + c, allowedMap)) {
+        for (Character nextChar : allowedMap.getOrDefault(curRow.substring(curIdx, curIdx + 2), new HashSet<>())) {
+            if (canPyramid(curRow, curIdx + 1, nextRow + nextChar, allowedMap)) {
                 return true;
             }
         }
