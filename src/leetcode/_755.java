@@ -9,7 +9,6 @@ public class _755 {
 
     public static int[] pourWater(int[] heights, int V, int K) {
         while (V > 0) {
-            boolean left = false;
 
             int best = K;
             for (int i = K; i > 0 && heights[i] >= heights[i - 1]; i--) {
@@ -31,9 +30,5 @@ public class _755 {
             V--;
         }
         return heights;
-    }
-
-    public static void main(String[] args) {
-        pourWater(new int[]{2,1,1,1,2}, 3 ,2);
     }
 }

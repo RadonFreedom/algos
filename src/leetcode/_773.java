@@ -36,15 +36,16 @@ public class _773 {
             int cnt = l.size();
             for (int i = 0; i < cnt; i++) {
                 String curr = l.removeFirst();
-                int zeroIdx = curr.indexOf('0');
-                for (int j : swapIdx[zeroIdx]) {
-                    String s = swap(zeroIdx, j, curr);
-                    if (ans.equals(s)) {
-                        return res;
-                    }
-                    if (!marked.contains(s)) {
-                        l.addLast(s);
-                        marked.add(s);
+                int idx = curr.indexOf('0');
+                for (int j : swapIdx[idx]) {
+                    String next = swap(idx, j, curr);
+                    if (!marked.contains(next)) {
+                        if (next.equals(ans)) {
+                            return res;
+                        } else {
+                            marked.add(next);
+                            l.addLast(next);
+                        }
                     }
                 }
             }

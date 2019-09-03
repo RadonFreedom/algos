@@ -6,72 +6,79 @@ import java.util.Set;
 
 /**
  * @author Shaman
- * @date 2019/8/27 15:28
+ * @date 2019/8/27 16:48
  */
 
 public class _269 {
 
-    public String alienOrder(String[] words) {
-        HashMap<Character, Set<Character>> adj = createAdj(words);
-        StringBuilder res = new StringBuilder();
-        boolean[] visited = new boolean[26];
-        for (char c = 'a'; c <= 'z'; c++) {
-            if (!visited[c - 'a']) {
-                if (adj.containsKey(c) && hasCycle(adj, c, new boolean[26], visited, res)) {
-                    return "";
-                }
-            }
-        }
-        for (String s : words) {
-            for (char c : s.toCharArray()) {
-                if (!visited[c - 'a']) {
-                    res.append(c);
-                    visited[c - 'a'] = true;
-                }
-            }
-        }
-        return res.toString();
+    public static void main(String[] args) {
+        alienOrder(new String[]{"za","zb","ca","cb"});
     }
 
-    private HashMap<Character, Set<Character>> createAdj(String[] list) {
-        HashMap<Character, Set<Character>> adj = new HashMap<>();
-        for (int i = 0; i < list.length - 1; i++) {
-            String a = list[i];
-            String b = list[i + 1];
-            for (int j = 0; j < a.length() && j < b.length(); j++) {
-                if (a.charAt(j) == b.charAt(j)) {
+    public static String alienOrder(String[] words) {
+
+        // 1.把所有映射关系存在map中
+        HashMap<Character, Set<Character>> map = new HashMap<>();
+        for (int i = 0; i < words.length - 1; i++) {
+            for (int j = 0; j < words[i].length() && j < words[i + 1].length(); j++) {
+                char curr = words[i].charAt(j);
+                char next = words[i + 1].charAt(j);
+                if (curr == next) {
                     continue;
                 }
-                Set<Character> set = adj.getOrDefault(a.charAt(j), new HashSet<>());
-                set.add(b.charAt(j));
-                adj.put(a.charAt(j), set);
+                Set<Character> set;
+                if (map.containsKey(curr)) {
+                    set = map.get(curr);
+                } else {
+                    set = new HashSet<>();
+                    map.put(curr, set);
+                }
+                set.add(next);
                 break;
             }
         }
-        return adj;
+
+        // 2.递归环校验 + 栈顶非环元素加入rst
+        StringBuilder rst = new StringBuilder();
+        boolean[] marked = new boolean[26];
+        for (Character c : map.keySet()) {
+            if (hasCycle(c, map, new boolean[26], marked, rst)) {
+                return "";
+            }
+        }
+
+        // 3.处理非唯一结果的情况
+        for (String word : words) {
+            for (int i = 0; i < word.length(); i++) {
+                if (!marked[word.charAt(i) - 'a']) {
+                    rst.insert(0, word.charAt(i));
+                    marked[word.charAt(i) - 'a'] = true;
+                }
+            }
+        }
+
+        return rst.toString();
     }
 
-    private boolean hasCycle(HashMap<Character, Set<Character>> adj,
-                             char cur,
-                             boolean[] onstack,
-                             boolean[] visited,
-                             StringBuilder sb) {
-        int index = cur - 'a';
-        if (onstack[index]) {
+    private static boolean hasCycle(char curr, HashMap<Character, Set<Character>> map, boolean[] stackMarked, boolean[] marked, StringBuilder rst) {
+
+        if (stackMarked[curr - 'a']) {
             return true;
         }
-        if (visited[index]) {
+        if (marked[curr - 'a']) {
             return false;
         }
-        visited[index] = true;
-        onstack[index] = true;
-        for (char c : adj.getOrDefault(cur, new HashSet<>())) {
-            if (hasCycle(adj, c, onstack, visited, sb)) {
+
+        stackMarked[curr - 'a'] = true;
+        for (Character next : map.getOrDefault(curr, new HashSet<>())) {
+            if (hasCycle(next, map, stackMarked, marked, rst)) {
                 return true;
             }
         }
-        sb.insert(0, cur);
-        onstack[index] = false;
+
+        rst.insert(0, curr);
+        marked[curr - 'a'] = true;
+        stackMarked[curr - 'a'] = false;
         return false;
     }
 }

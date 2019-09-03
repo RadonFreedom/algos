@@ -16,41 +16,45 @@ public class _385 {
     }
 
     public static NestedInteger deserialize(String s) {
-        if (s.isEmpty())
-            return null;
-        if (s.charAt(0) != '[') // ERROR: special case
-            return new NestedInteger(Integer.valueOf(s));
 
-        Stack<NestedInteger> stack = new Stack<>();
+        if (s.isEmpty()) {
+            return new NestedInteger();
+        }
+        if (s.charAt(0) != '[') {
+            return new NestedInteger(Integer.parseInt(s));
+        }
+
         NestedInteger curr = null;
-        int i = 0; // i shall point to the start of a number substring;
-        // j shall point to the end+1 of a number substring
-        for (int j = 0; j < s.length(); j++) {
-            char ch = s.charAt(j);
-            if (ch == '[') {
+        Stack<NestedInteger> stack = new Stack<>();
+
+        int lo = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '[') {
                 if (curr != null) {
                     stack.push(curr);
                 }
                 curr = new NestedInteger();
-                i = j + 1;
-            } else if (ch == ']') {
-                if (i < j)
-                    curr.add(new NestedInteger(Integer.valueOf(s.substring(i, j))));
-                if (!stack.isEmpty()) {
-                    NestedInteger pop = stack.pop();
-                    pop.add(curr);
-                    curr = pop;
+                lo = i + 1;
+            } else if (c == ',') {
+                if (lo < i) {
+                    curr.add(new NestedInteger(Integer.parseInt(s.substring(lo, i))));
                 }
-                i = j + 1;
-            } else if (ch == ',') {
-                if (s.charAt(j - 1) != ']') {
-                    String num = s.substring(i, j);
-                    curr.add(new NestedInteger(Integer.valueOf(num)));
+                lo = i + 1;
+            } else {
+                if (c == ']') {
+                    if (lo < i) {
+                        curr.add(new NestedInteger(Integer.parseInt(s.substring(lo, i))));
+                    }
+                    if (!stack.isEmpty()) {
+                        NestedInteger outer = stack.pop();
+                        outer.add(curr);
+                        curr = outer;
+                    }
+                    lo = i + 1;
                 }
-                i = j + 1;
             }
         }
-
         return curr;
     }
 

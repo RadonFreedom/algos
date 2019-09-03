@@ -41,16 +41,4 @@ public class _759 {
 
         return rst;
     }
-
-    public static void main(String[] args) {
-        LinkedList<List<Interval>> schedule = new LinkedList<>();
-        schedule.add(Arrays.asList(
-                new Interval(1,2),
-                new Interval(5,6),
-                new Interval(1, 3),
-                new Interval(4, 10)
-        ));
-
-        employeeFreeTime(schedule);
-    }
 }
