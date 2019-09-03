@@ -1,7 +1,6 @@
 package leetcode;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,14 +11,18 @@ import java.util.List;
 
 public class _15 {
 
-    public List<List<Integer>> threeSum(int[] nums) {
+    public static void main(String[] args) {
+        threeSum(new int[]{0, 0, 0});
+    }
+
+    public static List<List<Integer>> threeSum(int[] nums) {
         Arrays.sort(nums);
         List<List<Integer>> rst = new LinkedList<>();
 
-        for (int i = 0; i < nums.length - 2; i++) {
-            if (i > 0 && nums[i] == nums[i - 1]) continue;
-
-            //do two sum in the rest elements
+        for (int i = 0; i < nums.length - 2 && nums[i] <= 0; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
             int target = -nums[i];
             int j = i + 1;
             int k = nums.length - 1;
@@ -28,8 +31,12 @@ public class _15 {
                     rst.add(Arrays.asList(nums[i], nums[j], nums[k]));
                     j++;
                     k--;
-                    while (j < k && nums[j] == nums [j - 1]) j++;
-                    while (j < k && nums[k] == nums [k + 1]) k--;
+                    while (j < k && nums[j] == nums[j - 1]) {
+                        j++;
+                    }
+                    while (j < k && nums[k] == nums[k + 1]) {
+                        k--;
+                    }
                 } else if (nums[j] + nums[k] > target) {
                     k--;
                 } else {

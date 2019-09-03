@@ -7,13 +7,12 @@ package leetcode;
 
 public class _5 {
 
-    private int maxBegin;
-    private int maxEnd;
-
     public static void main(String[] args) {
-
-        System.out.println(new _5().longestPalindrome("ccc"));
+        new _5().longestPalindrome("babad");
     }
+
+    private int maxLo = 0;
+    private int maxHi = 0;
 
     public String longestPalindrome(String s) {
 
@@ -21,26 +20,22 @@ public class _5 {
             return s;
         }
 
-        maxBegin = 0;
-        maxEnd = 0;
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; i < s.length() - 1; i++) {
             getMaxLen(s, i, i);
             getMaxLen(s, i, i + 1);
         }
 
-        return s.substring(maxBegin, maxEnd + 1);
+        return s.substring(maxLo, maxHi + 1);
     }
 
-    private void getMaxLen(String s, int begin, int end) {
-
-        if (end == s.length() || begin < 0 || s.charAt(begin) != s.charAt(end)) {
-            if (end - begin - 2 > maxEnd - maxBegin) {
-                maxBegin = begin + 1;
-                maxEnd = end - 1;
-            }
-            return;
+    private void getMaxLen(String s, int lo, int hi) {
+        while (lo >= 0 && hi < s.length() && s.charAt(lo) == s.charAt(hi)) {
+            lo--;
+            hi++;
         }
-
-        getMaxLen(s, begin - 1, end + 1);
+        if (hi - lo - 2 > maxHi - maxLo) {
+            maxHi = hi - 1;
+            maxLo = lo + 1;
+        }
     }
 }

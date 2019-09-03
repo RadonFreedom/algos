@@ -26,6 +26,7 @@ public class _155 {
          * 注意到上一个min值永远在本个min值所在栈单元下面存储
          */
         public void push(int x) {
+            // 取等号，避免出现x == min导致pop掉2个实际值的情况
             if (x <= min) {
                 s.push(min);
                 min = x;

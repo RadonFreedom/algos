@@ -28,8 +28,4 @@ public class _1_TwoSum {
 
         return new int[0];
     }
-
-    public static void main(String[] args) {
-        new _1_TwoSum().twoSum(new int[]{2,7,11,15}, 9);
-    }
 }

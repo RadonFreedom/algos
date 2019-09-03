@@ -11,42 +11,23 @@ import java.util.HashMap;
 
 public class _3 {
 
-    public int lengthOfLongestSubstring(String s) {
+    public static int lengthOfLongestSubstring(String s) {
 
         HashMap<Character, Integer> map = new HashMap<>();
-
-        int maxLength = 0;
-        /*
-        字符串的起始索引（excluded）
-        因此初始值是 -1
-         */
-        int beginIndex = -1;
-
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            int length;
-
+        int lo = 0;
+        int rst = 0;
+        for (int hi = 0; hi < s.length(); hi++) {
+            char c = s.charAt(hi);
             if (map.containsKey(c)) {
-                /*
-                一旦发现重复字符串的出现，就可能需要更新字符串的起始索引
-                如果重复字符之前的索引小于当前索引，显然不需要更新beginIndex
-                 */
-                int formalIndex = map.get(c);
-                if (formalIndex > beginIndex) {
-                    beginIndex = formalIndex;
-                }
-                length = i - beginIndex;
-            } else {
-                length = i - beginIndex;
+                rst = Math.max(rst, hi - lo);
+                // 新的子串从重复字符的下一个字符开始
+                // 为了不用remove新lo之前的所有字符，我们在lo赋值时只取更大的值
+                lo = Math.max(lo, map.get(c) + 1);
             }
-
-            if (length > maxLength) {
-                maxLength = length;
-            }
-            map.put(c, i);
+            // 更新重复字符的索引
+            // 或者把新字符put进map
+            map.put(c, hi);
         }
-
-        return maxLength;
+        return Math.max(rst, s.length() - lo);
     }
-
 }
