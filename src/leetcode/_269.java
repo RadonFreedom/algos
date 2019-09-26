@@ -26,19 +26,13 @@ public class _269 {
                 if (curr == next) {
                     continue;
                 }
-                Set<Character> set;
-                if (map.containsKey(curr)) {
-                    set = map.get(curr);
-                } else {
-                    set = new HashSet<>();
-                    map.put(curr, set);
-                }
-                set.add(next);
+                map.putIfAbsent(curr, new HashSet<>());
+                map.get(curr).add(next);
                 break;
             }
         }
 
-        // 2.递归环校验 + 栈顶非环元素加入rst
+        // 2.递归环校验，同时把栈顶非环元素加入rst
         StringBuilder rst = new StringBuilder();
         boolean[] marked = new boolean[26];
         for (Character c : map.keySet()) {
@@ -47,11 +41,11 @@ public class _269 {
             }
         }
 
-        // 3.处理非唯一结果的情况
+        // 3.处理只有一个字母的情况
         for (String word : words) {
             for (int i = 0; i < word.length(); i++) {
                 if (!marked[word.charAt(i) - 'a']) {
-                    rst.insert(0, word.charAt(i));
+                    rst.append(word.charAt(i));
                     marked[word.charAt(i) - 'a'] = true;
                 }
             }
@@ -62,14 +56,15 @@ public class _269 {
 
     private static boolean hasCycle(char curr, HashMap<Character, Set<Character>> map, boolean[] stackMarked, boolean[] marked, StringBuilder rst) {
 
-        if (stackMarked[curr - 'a']) {
+        int currIdx = curr - 'a';
+        if (stackMarked[currIdx]) {
             return true;
         }
-        if (marked[curr - 'a']) {
+        if (marked[currIdx]) {
             return false;
         }
 
-        stackMarked[curr - 'a'] = true;
+        stackMarked[currIdx] = true;
         for (Character next : map.getOrDefault(curr, new HashSet<>())) {
             if (hasCycle(next, map, stackMarked, marked, rst)) {
                 return true;
@@ -77,8 +72,8 @@ public class _269 {
         }
 
         rst.insert(0, curr);
-        marked[curr - 'a'] = true;
-        stackMarked[curr - 'a'] = false;
+        marked[currIdx] = true;
+        stackMarked[currIdx] = false;
         return false;
     }
 }

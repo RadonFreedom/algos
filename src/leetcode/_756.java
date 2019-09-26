@@ -19,18 +19,22 @@ public class _756 {
             allowedMap.get(s.substring(0, 2)).add(s.charAt(2));
         }
 
-        return canPyramid(bottom, 0, "", allowedMap);
+        return canFormPyramid(bottom, 0, "", allowedMap);
     }
 
-    private boolean canPyramid(String curRow, int curIdx, String nextRow, HashMap<String, HashSet<Character>> allowedMap) {
-        if (curRow.length() == 1) {
+    private boolean canFormPyramid(String currLine, int currIdx, String nextLine, HashMap<String, HashSet<Character>> allowed) {
+
+        if (currLine.length() == 1) {
             return true;
         }
-        if (curIdx == curRow.length() - 1) {
-            return canPyramid(nextRow,  0, "", allowedMap);
+
+        if (currIdx == currLine.length() - 1) {
+            return canFormPyramid(nextLine, 0, "", allowed);
         }
-        for (Character nextChar : allowedMap.getOrDefault(curRow.substring(curIdx, curIdx + 2), new HashSet<>())) {
-            if (canPyramid(curRow, curIdx + 1, nextRow + nextChar, allowedMap)) {
+
+        String curr = currLine.substring(currIdx, currIdx + 2);
+        for (Character next : allowed.getOrDefault(curr, new HashSet<>())) {
+            if (canFormPyramid(currLine, currIdx + 1, nextLine + next, allowed)) {
                 return true;
             }
         }
