@@ -24,19 +24,21 @@ public class _759 {
     public static List<Interval> employeeFreeTime(List<List<Interval>> schedule) {
 
         ArrayList<Interval> intervals = new ArrayList<>();
-        schedule.forEach(intervals::addAll);
+        for (List<Interval> intervalList : schedule) {
+            intervals.addAll(intervalList);
+        }
 
+        // 按照所有时间区间的开始时间排序
         intervals.sort(Comparator.comparingInt(interval -> interval.start));
+
         LinkedList<Interval> rst = new LinkedList<>();
 
-        int end = intervals.get(0).end;
+        int currEnd = intervals.get(0).end;
         for (Interval interval : intervals) {
-            if (interval.start > end) {
-                rst.add(new Interval(end, interval.start));
+            if (interval.start > currEnd) {
+                rst.add(new Interval(currEnd, interval.start));
             }
-            if (interval.end > end) {
-                end = interval.end;
-            }
+            currEnd = Math.max(currEnd, interval.end);
         }
 
         return rst;
