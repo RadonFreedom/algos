@@ -32,7 +32,7 @@ public class _269 {
             }
         }
 
-        // 2.递归环校验，同时把栈顶非环元素加入rst
+        // 2.深度优先搜索，进行环校验，同时把栈顶非环元素加入rst
         StringBuilder rst = new StringBuilder();
         boolean[] marked = new boolean[26];
         for (Character c : map.keySet()) {
@@ -41,7 +41,7 @@ public class _269 {
             }
         }
 
-        // 3.处理只有一个字母的情况
+        // 3.处理字典只有一个字母的情况
         for (String word : words) {
             for (int i = 0; i < word.length(); i++) {
                 if (!marked[word.charAt(i) - 'a']) {

@@ -1,6 +1,9 @@
 package leetcode;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -9,115 +12,86 @@ import java.util.*;
  */
 
 public class _336 {
-
-    public static List<List<Integer>> palindromePairs(String[] words) {
-        HashMap<Integer, Integer> rstMap = new HashMap<>();
-        Node root = getNodes(words, false);
-        Node reverseRoot = getNodes(words, true);
-
-        for (int i = 0; i < words.length; i++) {
-            int n = words[i].length();
-
-            // 找到回文对的最大左右边界
-            int rightBound = 0;
-            int leftBound = n - 1;
-            for (int j = 0; j < n - 1; j++) {
-                int[] bounds = getPalindromeBounds(words[i], j, j);
-                if (bounds[0] != -1) {
-                    if (bounds[0] == 0) {
-                        rightBound = Math.max(rightBound, bounds[1]);
-                    } else {
-                        leftBound = Math.min(leftBound, bounds[0]);
-                    }
-                }
-                bounds = getPalindromeBounds(words[i], j, j + 1);
-                if (bounds[0] != -1) {
-                    if (bounds[0] == 0) {
-                        rightBound = Math.max(rightBound, bounds[1]);
-                    } else {
-                        leftBound = Math.min(leftBound, bounds[0]);
-                    }
-                }
-            }
-
-            Node curr = root;
-            // 从左到右轮询，轮询完左边界左侧的所有字符就可以开始添加结果
-            for (int j = 0; j < n; j++) {
-                int k = words[i].charAt(j) - 'a';
-                if (curr.next[k] == null) {
-                    break;
-                }
-                curr = curr.next[k];
-                if (j >= leftBound - 1 && curr.index != null && curr.index != i) {
-                    rstMap.put(i, curr.index);
-                }
-            }
-            curr = reverseRoot;
-            // 从右到左轮询，轮询完右边界右侧的所有字符就可以开始添加结果
-            for (int j = n - 1; j >= 0; j--) {
-                int k = words[i].charAt(j) - 'a';
-                if (curr.next[k] == null) {
-                    break;
-                }
-                curr = curr.next[k];
-                if (j <= rightBound + 1 && curr.index != null && curr.index != i) {
-                    rstMap.put(curr.index, i);
-                }
-            }
-        }
-
-        LinkedList<List<Integer>> rst = new LinkedList<>();
-        for (Map.Entry<Integer, Integer> entry : rstMap.entrySet()) {
-            rst.add(Arrays.asList(entry.getKey(), entry.getValue()));
-        }
-        return rst;
-    }
-
-    private static Node getNodes(String[] words, boolean reverse) {
-        Node root = new Node();
-
-        for (int i = 0; i < words.length; i++) {
-            Node curr = root;
-            String word = words[i];
-            if (reverse) {
-                word = new StringBuilder(word).reverse().toString();
-            }
-            for (int j = words[i].length() - 1; j >= 0; j--) {
-                int k = word.charAt(j) - 'a';
-                if (curr.next[k] == null) {
-                    curr.next[k] = new Node();
-                }
-                curr = curr.next[k];
-            }
-            curr.index = i;
-        }
-        return root;
-    }
-
-    /**
-     * - 如果回文对没有扩展到word的左右边界，返回 -1
-     * - 返回回文对的左右边界
-     *
-     * @param i 回文对中心左侧，i = j 或 i = j-1
-     * @param j 回文对中心右侧
-     */
-    private static int[] getPalindromeBounds(String word, int i, int j) {
-        while (i >= 0 && j < word.length()) {
-            if (word.charAt(i) != word.charAt(j)) {
-                return new int[]{-1};
-            }
-            i--;
-            j++;
-        }
-        return new int[]{i + 1, j - 1};
-    }
-
     public static void main(String[] args) {
         palindromePairs(new String[]{"abcd", "dcba", "lls", "s", "sssll"});
     }
 
+    public static List<List<Integer>> palindromePairs(String[] words) {
+
+        LinkedList<List<Integer>> rst = new LinkedList<>();
+        Node root = new Node();
+
+        //从左往右构建nodes，包含去除局部回文对的所有子word
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            Node node = root;
+            if (isPalindrome(word, 0, word.length() - 1)) {
+                node.palIdx.add(i);
+            }
+            for (int j = 0; j < word.length(); j++) {
+                node.next.putIfAbsent(word.charAt(j), new Node());
+                node = node.next.get(word.charAt(j));
+                if (j == word.length() - 1) {
+                    node.fullIdx = i;
+                } else if (isPalindrome(word, j + 1, word.length() - 1)) {
+                    node.palIdx.add(i);
+                }
+            }
+        }
+
+        //从右往左搜索word，包括去除局部回文对的所有子word
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            Node node = root;
+            //处理空字符串
+            if (word.length() == 0) {
+                for (Integer idx : node.palIdx) {
+                    if (idx != i) {
+                        rst.add(Arrays.asList(idx, i));
+                        rst.add(Arrays.asList(i, idx));
+                    }
+                }
+            }
+            for (int j = word.length() - 1; j >= 0; j--) {
+                if (!node.next.containsKey(word.charAt(j))) {
+                    break;
+                }
+                node = node.next.get(word.charAt(j));
+
+                if (j == 0) {
+                    for (Integer idx : node.palIdx) {
+                        if (idx != i) {
+                            rst.add(Arrays.asList(i, idx));
+                        }
+                    }
+                } else if (isPalindrome(word, 0, j - 1)) {
+                    if (node.fullIdx != null && node.fullIdx != i) {
+                        rst.add(Arrays.asList(node.fullIdx, i));
+                    }
+                }
+            }
+        }
+
+        return rst;
+    }
+
+    private static boolean isPalindrome(String word, int lo, int hi) {
+        while (lo < hi) {
+            if (word.charAt(lo) != word.charAt(hi)) {
+                return false;
+            }
+            lo++;
+            hi--;
+        }
+        return true;
+    }
+
     private static class Node {
-        Node[] next = new Node[26];
-        Integer index = null;
+        Integer fullIdx = null;
+        /**
+         * 在此处存在局部回文对的字符串索引
+         */
+        List<Integer> palIdx = new LinkedList<>();
+        HashMap<Character, Node> next = new HashMap<>();
     }
 }
