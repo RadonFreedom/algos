@@ -1,4 +1,4 @@
-package leetcode;
+package leetcode.dp;
 
 /**
  * @author Shaman
