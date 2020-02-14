@@ -29,15 +29,15 @@ public class _44_2 {
             return dp[i][j];
         }
 
-        boolean isMatch;
+        boolean isMatched;
         if (p.charAt(j) == '*') {
-            isMatch = match(i + 1, j) || match(i, j + 1);
+            isMatched = match(i + 1, j) || match(i, j + 1);
         } else {
-            isMatch = s.length() > i && (s.charAt(i) == p.charAt(j) || p.charAt(j) == '?')
+            isMatched = s.length() > i && (s.charAt(i) == p.charAt(j) || p.charAt(j) == '?')
                     && match(i + 1, j + 1);
         }
 
-        dp[i][j] = isMatch;
-        return isMatch;
+        dp[i][j] = isMatched;
+        return isMatched;
     }
 }
