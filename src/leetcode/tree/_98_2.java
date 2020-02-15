@@ -1,11 +1,11 @@
-package leetcode;
+package leetcode.tree;
 
 /**
  * @author Shaman
  * @date 2019/9/2 20:19
  */
 
-public class _98 {
+public class _98_2 {
     public boolean isValidBST(TreeNode root) {
         return isValidNode(root, Long.MIN_VALUE, Long.MAX_VALUE);
     }
