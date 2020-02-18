@@ -1,6 +1,6 @@
 package leetcode;
 
-import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * @author xufeng
@@ -11,30 +11,27 @@ public class _128 {
 
     public int longestConsecutive(int[] nums) {
 
-        HashMap<Integer, Integer> map = new HashMap<>(nums.length);
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
         int rst = 0;
+        HashSet<Integer> set = new HashSet<>();
         for (int num : nums) {
-            if (!map.containsKey(num)) {
+            set.add(num);
+        }
 
-                int cnt;
-                int lCnt = map.getOrDefault(num - 1, 0);
-                int rCnt = map.getOrDefault(num + 1, 0);
-                cnt = lCnt + rCnt + 1;
-                // 给边界放上链长度，lo = num - lCnt, hi = num + rCnt
-                map.put(num - lCnt, cnt);
-                map.put(num + rCnt, cnt);
-            /*
-                给当前数字放上链长度，为了满足情况3.
-                1. 左右都无，上面put过了
-                2. 只有一边有，上面put过了
-                3. 两边都有，如果不put，再次加入相同数将不continue，会产生bug
-            */
-                map.put(num, cnt);
-                if (rst < cnt) {
-                    rst = cnt;
+        for (Integer num : nums) {
+            if (!set.contains(num - 1)) {
+                int cnt = 0;
+                while (set.contains(num)) {
+                    cnt++;
+                    num++;
+                    set.remove(num);
                 }
+                rst = Math.max(rst, cnt);
             }
         }
+
         return rst;
     }
 }

@@ -10,7 +10,7 @@ public class _42_2 {
     /**
      * 当前索引左侧和右侧最高值的较小值决定了本位的水量
      */
-    public int trap2(int[] height) {
+    public int trap(int[] height) {
 
         int res = 0;
         int left = 0, right = height.length - 1;
@@ -28,7 +28,6 @@ public class _42_2 {
                 因此left的水高可以计算出来
                  */
                 res += lm - height[left];
-                //计算完left索引往右走
                 left++;
             } else {
                 res += rm - height[right];
